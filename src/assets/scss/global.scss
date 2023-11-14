@@ -1,0 +1,62 @@
+@import "./mixins";
+@import "./variables";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $family-normal;
+  margin: 0;
+  min-width: 320px;
+  background-color: #fff;
+  color: $black;
+  min-height: 100vh;
+  @include flex;
+  place-items: center;
+}
+
+#app {
+  margin: 0 auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+main {
+  @include flex;
+  justify-content: center;
+  width: 100%;
+  margin: auto;
+  padding: 24px;
+
+}
+
+.app-btn {
+  @include flex;
+  background-color: $accent;
+  color: $gray-0;
+  border: none;
+  cursor: pointer;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  width: 100%;
+  transition: background .3s ease-in;
+  font-size: 14px;
+  font-family: inherit;
+
+  &:hover {
+    background-color: $accent-dark;
+  }
+}
