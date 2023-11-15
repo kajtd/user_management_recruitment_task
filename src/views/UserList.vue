@@ -7,10 +7,11 @@
   import UserListItem from '../components/UserListItem.vue';
   import SearchBar from '../components/SearchBar.vue';
   import AppButton from '../components/AppButton.vue';
+  import UserPagination from '../components/UserPagination.vue';
 
   const usersStore = useUsersStore();
 
-  const { users, totalPages } = storeToRefs(usersStore);
+  const { users, totalPages, currentUsers } = storeToRefs(usersStore);
 
   type JSONResponse = {
     data?: User[];
@@ -88,13 +89,14 @@
         </thead>
         <tbody class="user-table__body">
           <UserListItem
-            v-for="user in users"
+            v-for="user in currentUsers"
             :key="user.id"
             :user="user"
             class="user-table__row"
           />
         </tbody>
       </table>
+      <UserPagination class="user-list__pagination" />
     </section>
   </main>
 </template>
@@ -189,6 +191,10 @@
       @media screen and (min-width: $md) {
         padding: 20px;
       }
+    }
+
+    &__pagination {
+      align-self: flex-start;
     }
   }
 </style>
