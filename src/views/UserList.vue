@@ -11,14 +11,8 @@
 
   const usersStore = useUsersStore();
 
-  const {
-    users,
-    totalPages,
-    filteredUsers,
-    currentUsers,
-    searchText,
-    currentPage,
-  } = storeToRefs(usersStore);
+  const { users, filteredUsers, currentUsers, searchText, currentPage } =
+    storeToRefs(usersStore);
 
   type JSONResponse = {
     data?: User[];
@@ -70,12 +64,14 @@
     const initialResponse = await fetchUsers();
     users.value = initialResponse.data || [];
 
+    const totalPages = initialResponse.total_pages;
+
     // Fetch all pages upfront. This is done because:
     // 1. The total amount of data is small (only 12 users), so it won't lead to a long initial load time or high memory usage.
     // 2. The API doesn't provide a search endpoint, so we need all data on the client side to implement search functionality.
     // 3. The data on the server doesn't change frequently, so we don't have to worry about data freshness.
 
-    for (let i = 2; i <= totalPages.value; i++) {
+    for (let i = 2; i <= totalPages; i++) {
       const additionalResponse = await fetchUsers(i);
       users.value = [...users.value, ...(additionalResponse.data || [])];
     }
