@@ -1,5 +1,11 @@
 <script setup lang="ts">
   import type { User } from './../types/User.ts';
+  import { storeToRefs } from 'pinia';
+  import { useUsersStore } from '../store/users';
+
+  const usersStore = useUsersStore();
+
+  const { users } = storeToRefs(usersStore);
 
   type Props = {
     user: User;
@@ -11,8 +17,21 @@
     // Edit user logic here
   };
 
-  const deleteUser = () => {
-    // Delete user logic here
+  const deleteUser = async (id: number): Promise<void> => {
+    const response = await window.fetch(`https://reqres.in/api/users/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+      },
+    });
+
+    if (response.ok) {
+      // If the deletion was successful, remove the user from the local state
+      users.value = users.value.filter((user) => user.id !== id);
+    } else {
+      console.error(`Error when deleting user with id ${id}`);
+      throw new Error(`Error when deleting user with id ${id}`);
+    }
   };
 </script>
 
@@ -32,7 +51,7 @@
       <button @click="editUser" class="user-list-item__btn">
         <i class="icon icon--small icon--gray edit"></i>
       </button>
-      <button @click="deleteUser" class="user-list-item__btn">
+      <button @click="deleteUser(user.id)" class="user-list-item__btn">
         <i class="icon icon--small icon--gray trash"></i>
       </button>
     </td>
