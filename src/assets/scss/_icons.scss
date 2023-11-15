@@ -1,0 +1,56 @@
+.icon {
+  display: inline-block;
+  text-indent: -9999px;
+  width: 24px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-size: 24px 24px;
+
+  &--white {
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+  }
+
+  &--black {
+    filter: invert(0%) sepia(0%) saturate(7500%) hue-rotate(165deg) brightness(89%) contrast(105%);  
+  }
+  
+  &--small {
+    width: 16px;
+    height: 16px;
+    background-size: 16px 16px;
+  }
+  
+  &--medium {
+    width: 20px;
+    height: 20px;
+    background-size: 20px 20px;
+  }
+}
+
+.camera {
+  background-image: url('./../icons/camera.svg');
+}
+
+.edit {
+  background-image: url('./../icons/edit.svg');
+}
+
+.plus {
+  background-image: url('./../icons/plus.svg');
+}
+
+.trash {
+  background-image: url('./../icons/trash.svg');
+}
+
+.double-arrow-left {
+  background-image: url('./../icons/double-arrow-left.svg');
+}
+
+.double-arrow-right {
+  background-image: url('./../icons/double-arrow-right.svg');
+}
+
+.search {
+  background-image: url('./../icons/search.svg');
+}

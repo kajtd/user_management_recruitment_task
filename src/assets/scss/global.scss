@@ -1,5 +1,6 @@
 @import "./mixins";
 @import "./variables";
+@import "./icons";
 
 *,
 *::before,
@@ -13,15 +14,17 @@ body {
   font-family: $family-normal;
   margin: 0;
   min-width: 320px;
-  background-color: #fff;
+  background-color: $bg;
   color: $black;
   min-height: 100vh;
+  width: 100%;
   @include flex;
   place-items: center;
 }
 
 #app {
   margin: 0 auto;
+  width: 100%;
 }
 
 a {
@@ -39,24 +42,5 @@ main {
   width: 100%;
   margin: auto;
   padding: 24px;
-
 }
 
-.app-btn {
-  @include flex;
-  background-color: $accent;
-  color: $gray-0;
-  border: none;
-  cursor: pointer;
-  justify-content: center;
-  padding: 8px 16px;
-  border-radius: 6px;
-  width: 100%;
-  transition: background .3s ease-in;
-  font-size: 14px;
-  font-family: inherit;
-
-  &:hover {
-    background-color: $accent-dark;
-  }
-}
