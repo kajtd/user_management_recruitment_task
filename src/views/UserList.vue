@@ -1,69 +1,66 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import type { User } from './../types/User.ts';
 
   import UserListItem from '../components/UserListItem.vue';
   import SearchBar from '../components/SearchBar.vue';
   import AppButton from '../components/AppButton.vue';
 
-  const users = ref<User[]>([
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-    {
-      id: 1,
-      email: 'jon_doe@gmail.com',
-      avatar: 'https://picsum.photos/200',
-      first_name: 'Jon',
-      last_name: 'Doe',
-    },
-  ]);
+  type JSONResponse = {
+    data?: User[];
+    page: number;
+    per_page: number;
+    support?: {
+      url?: string;
+      text?: string;
+    };
+    total: number;
+    total_pages: number;
+  };
+
+  const users = ref<User[]>([]);
+
+  async function fetchUsers(pageNumber = 1): Promise<JSONResponse> {
+    const response = await window.fetch(
+      `https://reqres.in/api/users?page=${pageNumber}`,
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+        },
+      }
+    );
+
+    const responseData: JSONResponse = await response.json();
+    if (response.ok) {
+      const usersData = responseData?.data;
+      if (usersData) {
+        return responseData;
+      } else {
+        return Promise.reject(new Error(`Error when fetching users`));
+      }
+    } else {
+      return Promise.reject(new Error(`Error when fetching users`));
+    }
+  }
+
+  onMounted(async () => {
+    // Fetch the initial page to get the total number of pages.
+    const initialResponse = await fetchUsers();
+    users.value = initialResponse.data || [];
+
+    const totalPages = initialResponse.total_pages;
+
+    // Fetch all pages upfront. This is done because:
+    // 1. The total amount of data is small (only 12 users), so it won't lead to a long initial load time or high memory usage.
+    // 2. The API doesn't provide a search endpoint, so we need all data on the client side to implement search functionality.
+    // 3. The data on the server doesn't change frequently, so we don't have to worry about data freshness.
+
+    for (let i = 2; i <= totalPages; i++) {
+      const additionalResponse = await fetchUsers(i);
+      users.value = [...users.value, ...(additionalResponse.data || [])];
+    }
+  });
 </script>
 
 <template>
