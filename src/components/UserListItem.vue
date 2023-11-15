@@ -57,6 +57,7 @@
       width: 36px;
       height: 36px;
       margin-left: 6px;
+      object-fit: cover;
 
       @media screen and (min-width: $md) {
         margin-left: 12px;
