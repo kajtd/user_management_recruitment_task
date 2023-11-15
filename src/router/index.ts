@@ -8,12 +8,8 @@ export default createRouter({
       component: () => import('../views/UserList.vue'),
     },
     {
-      path: '/user-add',
-      component: () => import('../views/UserAdd.vue'),
-    },
-    {
-      path: '/user-edit',
-      component: () => import('../views/UserEdit.vue'),
+      path: '/user-form',
+      component: () => import('../views/UserForm.vue'),
     },
   ],
 })
