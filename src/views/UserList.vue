@@ -93,7 +93,7 @@
           <span>Add User</span>
         </AppButton>
       </header>
-      <table class="user-table">
+      <table v-if="currentUsers.length" class="user-table">
         <thead class="user-table__head">
           <tr class="user-table__row">
             <th class="user-table__header-cell"></th>
@@ -110,6 +110,7 @@
           />
         </tbody>
       </table>
+      <div v-else>No matching users were found. Please try again.</div>
       <UserPagination
         :total-pages="searchText ? filteredUsersTotalPages : totalUsersPages"
         class="user-list__pagination"
