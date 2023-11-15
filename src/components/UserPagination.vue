@@ -2,8 +2,12 @@
   import { useUsersStore } from '../store/users';
   import { storeToRefs } from 'pinia';
 
+  const props = defineProps<{
+    totalPages: number;
+  }>();
+
   const usersStore = useUsersStore();
-  const { totalPages, currentPage } = storeToRefs(usersStore);
+  const { currentPage } = storeToRefs(usersStore);
 
   const goToPage = (page: number) => {
     currentPage.value = page;
@@ -14,7 +18,7 @@
   };
 
   const goToLastPage = () => {
-    currentPage.value = totalPages.value;
+    currentPage.value = props.totalPages;
   };
 </script>
 

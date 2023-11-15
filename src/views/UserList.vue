@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted } from 'vue';
+  import { computed, watch, onMounted } from 'vue';
   import type { User } from './../types/User.ts';
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
@@ -11,7 +11,14 @@
 
   const usersStore = useUsersStore();
 
-  const { users, totalPages, currentUsers } = storeToRefs(usersStore);
+  const {
+    users,
+    totalPages,
+    filteredUsers,
+    currentUsers,
+    searchText,
+    currentPage,
+  } = storeToRefs(usersStore);
 
   type JSONResponse = {
     data?: User[];
@@ -24,6 +31,11 @@
     total: number;
     total_pages: number;
   };
+
+  const totalUsersPages = computed(() => Math.ceil(users.value.length / 6));
+  const filteredUsersTotalPages = computed(() =>
+    Math.ceil(filteredUsers.value.length / 6)
+  );
 
   async function fetchUsers(pageNumber = 1): Promise<JSONResponse> {
     const response = await window.fetch(
@@ -49,12 +61,14 @@
     }
   }
 
+  watch(searchText, () => {
+    currentPage.value = 1;
+  });
+
   onMounted(async () => {
     // Fetch the initial page to get the total number of pages.
     const initialResponse = await fetchUsers();
     users.value = initialResponse.data || [];
-
-    totalPages.value = initialResponse.total_pages;
 
     // Fetch all pages upfront. This is done because:
     // 1. The total amount of data is small (only 12 users), so it won't lead to a long initial load time or high memory usage.
@@ -73,7 +87,11 @@
     <h1 class="user-list__title">User list</h1>
     <section class="user-list__section">
       <header class="user-list__header">
-        <SearchBar class="user-list__search-bar" />
+        <SearchBar
+          v-model="searchText"
+          placeholder="Search for users..."
+          class="user-list__search-bar"
+        />
         <AppButton class="user-list__add-btn" rounded>
           <i class="icon icon--medium icon--white plus"></i>
           <span>Add User</span>
@@ -96,7 +114,10 @@
           />
         </tbody>
       </table>
-      <UserPagination class="user-list__pagination" />
+      <UserPagination
+        :total-pages="searchText ? filteredUsersTotalPages : totalUsersPages"
+        class="user-list__pagination"
+      />
     </section>
   </main>
 </template>

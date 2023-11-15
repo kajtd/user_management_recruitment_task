@@ -1,16 +1,24 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  defineProps<{
+    modelValue: string;
+    placeholder: string;
+  }>();
 
-  const searchText = ref('');
+  const emit = defineEmits<{
+    (event: 'update:modelValue', payload: string): void;
+  }>();
 </script>
 
 <template>
   <div class="search-bar">
     <input
-      v-model="searchText"
+      :value="modelValue"
       type="text"
-      placeholder="Search for users..."
+      :placeholder="placeholder"
       class="search-bar__input"
+      @input="
+        emit('update:modelValue', ($event.target as HTMLInputElement).value)
+      "
     />
     <i class="icon icon--small icon--black search search-bar__search"></i>
   </div>
