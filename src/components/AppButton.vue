@@ -51,6 +51,7 @@
     transition: background 0.3s ease-in;
     font-size: 14px;
     font-family: inherit;
+    gap: 12px;
 
     &:hover {
       background-color: $accent-dark;
