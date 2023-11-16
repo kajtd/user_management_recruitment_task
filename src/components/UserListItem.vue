@@ -3,6 +3,7 @@
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
   import { useRouter } from 'vue-router';
+  import { API_BASE_URL } from '../config';
 
   const router = useRouter();
 
@@ -22,7 +23,7 @@
 
   const deleteUser = async (id: number): Promise<void> => {
     loading.value = true;
-    const response = await window.fetch(`https://reqres.in/api/users/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/users/${id}`, {
       method: 'DELETE',
       headers: {
         'content-type': 'application/json;charset=UTF-8',

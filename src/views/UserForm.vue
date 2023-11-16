@@ -5,6 +5,7 @@
   import type { User } from '../types/User';
   import { useRouter, useRoute } from 'vue-router';
   import defaultAvatar from '../assets/images/user-icon.png';
+  import { API_BASE_URL } from '../config';
   import AppButton from '../components/AppButton.vue';
 
   type APIResponse = {
@@ -48,8 +49,8 @@
   async function saveUser(user: User): Promise<APIResponse> {
     const method = user.id ? 'PUT' : 'POST';
     const url = user.id
-      ? `https://reqres.in/api/users/${user.id}`
-      : 'https://reqres.in/api/users';
+      ? `${API_BASE_URL}/users/${user.id}`
+      : '${API_BASE_URL}/users';
 
     const response = await fetch(url, {
       method,

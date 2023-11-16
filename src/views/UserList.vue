@@ -3,6 +3,7 @@
   import type { User } from './../types/User.ts';
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
+  import { API_BASE_URL } from '../config';
 
   import UserListItem from '../components/UserListItem.vue';
   import SearchBar from '../components/SearchBar.vue';
@@ -38,15 +39,12 @@
   );
 
   async function fetchUsers(pageNumber = 1): Promise<JSONResponse> {
-    const response = await window.fetch(
-      `https://reqres.in/api/users?page=${pageNumber}`,
-      {
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/users?page=${pageNumber}`, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+      },
+    });
 
     const responseData: JSONResponse = await response.json();
     if (response.ok) {
