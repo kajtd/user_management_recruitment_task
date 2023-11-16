@@ -1,9 +1,17 @@
 <script setup lang="ts">
+  import { computed } from 'vue';
   import type { User } from './../types/User.ts';
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
   import { useRouter } from 'vue-router';
   import { API_BASE_URL } from '../config';
+  import defaultAvatar from '../assets/images/user-icon.png';
+
+  type Props = {
+    user: User;
+  };
+
+  const props = defineProps<Props>();
 
   const router = useRouter();
 
@@ -11,11 +19,9 @@
 
   const { users, loading } = storeToRefs(usersStore);
 
-  type Props = {
-    user: User;
-  };
-
-  defineProps<Props>();
+  const avatar = computed(() => {
+    return props.user.avatar || defaultAvatar;
+  });
 
   const editUser = (id: number) => {
     router.push(`/user-form/${id}`);
@@ -45,8 +51,8 @@
   <tr class="user-list-item">
     <td>
       <img
-        :src="user.avatar"
-        :alt="`${user.first_name} ${user.last_name}`"
+        :src="avatar"
+        :alt="avatar ? `${user.first_name} ${user.last_name}` : 'User icon'"
         class="user-list-item__image"
       />
     </td>
