@@ -133,7 +133,7 @@
           class="user-profile__image"
         />
         <button class="user-profile__change-photo-btn" @click="changePhoto">
-          <i class="icon icon--medium icon--gray camera"></i>
+          <i class="icon icon--small icon--gray camera"></i>
           <span>Change Photo</span>
         </button>
       </div>
@@ -176,6 +176,7 @@
       display: flex;
       flex-direction: column;
       background: white;
+      box-shadow: $gray-shadow;
       padding: 36px 20px 20px 20px;
       width: 100%;
       height: 300px;
@@ -208,7 +209,7 @@
 
     &__submit {
       margin-top: auto;
-      max-width: 136px;
+      max-width: 148px;
 
       @media screen and (min-width: $md) {
         flex: 0 1 100%;
@@ -222,6 +223,7 @@
     justify-content: space-around;
     gap: 10%;
     background-color: white;
+    box-shadow: $gray-shadow;
     padding: 24px;
     height: 300px;
     width: 100%;
@@ -236,22 +238,25 @@
     }
 
     &__image {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       margin-top: auto;
+      border: 3px solid $gray-2;
+      padding: 1px;
     }
 
     &__change-photo-btn {
       @include flex;
       justify-content: center;
-      gap: 10px;
+      gap: 4px;
       width: 100%;
       margin-top: auto;
-      border: 1px solid $gray-4;
+      border: 1px solid black;
+      font-size: 14px;
       color: $gray-4;
       border-radius: 4px;
-      padding: 6px 12px;
+      padding: 8px 12px;
       background-color: transparent;
       cursor: pointer;
     }
