@@ -1,15 +1,86 @@
 <script setup lang="ts">
+  import { ref } from 'vue';
+  import { storeToRefs } from 'pinia';
+  import { useUsersStore } from '../store/users';
+  import type { User } from '../types/User';
+  import { useRouter } from 'vue-router';
+  import defaultAvatar from '../assets/images/user-icon.png';
   import AppButton from '../components/AppButton.vue';
+
+  type APIResponse = {
+    id: number;
+    email?: string;
+    first_name: string;
+    last_name: string;
+    avatar: string;
+  };
+
+  const router = useRouter();
+
+  const usersStore = useUsersStore();
+
+  const firstName = ref('');
+  const lastName = ref('');
+  const avatar = ref(defaultAvatar);
+
+  const { users } = storeToRefs(usersStore);
+
+  const changePhoto = () => {
+    const url = window.prompt('Please enter the URL of the new photo');
+    if (url) {
+      avatar.value = url;
+    }
+  };
+
+  async function createUser(user: User): Promise<APIResponse> {
+    const response = await fetch('https://reqres.in/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error when creating new user');
+    }
+
+    return response.json();
+  }
+
+  const onSubmit = async () => {
+    const newUser: User = {
+      id: users.value.length + 1,
+      avatar: avatar.value,
+      first_name: firstName.value,
+      last_name: lastName.value,
+    };
+
+    try {
+      const createdUser = await createUser({
+        id: users.value.length + 1,
+        first_name: newUser.first_name,
+        last_name: newUser.last_name,
+        avatar: newUser.avatar,
+      });
+
+      users.value.push(createdUser);
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 </script>
 
 <template>
   <main class="user-form">
     <h1 class="user-form__title">Add user</h1>
     <section class="user-form__section">
-      <form class="user-form__form">
+      <form @submit.prevent="onSubmit" class="user-form__form">
         <div class="user-form__input-group">
           <label for="first-name" class="user-form__label">First Name</label>
           <input
+            v-model="firstName"
             type="text"
             id="first-name"
             class="user-form__input"
@@ -19,6 +90,7 @@
         <div class="user-form__input-group">
           <label for="last-name" class="user-form__label">Last Name</label>
           <input
+            v-model="lastName"
             type="text"
             id="last-name"
             class="user-form__input"
@@ -31,11 +103,11 @@
       </form>
       <div class="user-profile">
         <img
-          src="https://reqres.in/img/faces/2-image.jpg"
-          alt="User"
+          :src="avatar"
+          :alt="avatar ? `${firstName} ${lastName}` : 'User icon'"
           class="user-profile__image"
         />
-        <button class="user-profile__change-photo-btn">
+        <button class="user-profile__change-photo-btn" @click="changePhoto">
           <i class="icon icon--medium icon--gray camera"></i>
           <span>Change Photo</span>
         </button>

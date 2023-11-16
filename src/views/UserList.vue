@@ -60,6 +60,9 @@
   });
 
   onMounted(async () => {
+    if (users.value.length) {
+      return;
+    }
     // Fetch the initial page to get the total number of pages.
     const initialResponse = await fetchUsers();
     users.value = initialResponse.data || [];
@@ -88,7 +91,7 @@
           placeholder="Search for users..."
           class="user-list__search-bar"
         />
-        <AppButton class="user-list__add-btn" rounded>
+        <AppButton href="user-form" class="user-list__add-btn" rounded>
           <i class="icon icon--medium icon--white plus"></i>
           <span>Add User</span>
         </AppButton>
