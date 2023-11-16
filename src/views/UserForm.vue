@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
   import type { User } from '../types/User';
@@ -24,6 +24,7 @@
   const firstName = ref('');
   const lastName = ref('');
   const avatar = ref(defaultAvatar);
+  const isEditing = computed(() => !!route.params.id);
 
   const { users, loading } = storeToRefs(usersStore);
 
@@ -98,7 +99,7 @@
 
 <template>
   <main class="user-form">
-    <h1 class="user-form__title">Add user</h1>
+    <h1 class="user-form__title">{{ isEditing ? 'Edit' : 'Add' }} user</h1>
     <section class="user-form__section">
       <form @submit.prevent="onSubmit" class="user-form__form">
         <div class="user-form__input-group">
