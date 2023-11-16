@@ -11,8 +11,14 @@
 
   const usersStore = useUsersStore();
 
-  const { users, filteredUsers, currentUsers, searchText, currentPage } =
-    storeToRefs(usersStore);
+  const {
+    users,
+    filteredUsers,
+    currentUsers,
+    searchText,
+    currentPage,
+    loading,
+  } = storeToRefs(usersStore);
 
   type JSONResponse = {
     data?: User[];
@@ -63,6 +69,8 @@
     if (users.value.length) {
       return;
     }
+    loading.value = true;
+
     // Fetch the initial page to get the total number of pages.
     const initialResponse = await fetchUsers();
     users.value = initialResponse.data || [];
@@ -78,6 +86,7 @@
       const additionalResponse = await fetchUsers(i);
       users.value = [...users.value, ...(additionalResponse.data || [])];
     }
+    loading.value = false;
   });
 </script>
 
@@ -96,7 +105,7 @@
           <span>Add User</span>
         </AppButton>
       </header>
-      <table v-if="currentUsers.length" class="user-table">
+      <table v-if="currentUsers.length && !loading" class="user-table">
         <thead class="user-table__head">
           <tr class="user-table__row">
             <th class="user-table__header-cell"></th>
@@ -113,7 +122,9 @@
           />
         </tbody>
       </table>
-      <div v-else>No matching users were found. Please try again.</div>
+      <div v-else-if="!currentUsers.length && !loading">
+        No matching users were found. Please try again.
+      </div>
       <UserPagination
         :total-pages="searchText ? filteredUsersTotalPages : totalUsersPages"
         class="user-list__pagination"

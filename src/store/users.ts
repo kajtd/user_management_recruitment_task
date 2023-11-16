@@ -7,6 +7,7 @@ export const useUsersStore = defineStore('users', () => {
     const currentPage = ref(1)
     const usersPerPage = 6
     const searchText = ref('')
+    const loading = ref(false)
 
     const totalPages = computed(() => Math.ceil(filteredUsers.value.length / usersPerPage));
 
@@ -31,6 +32,7 @@ export const useUsersStore = defineStore('users', () => {
 
     return { 
         users,
+        loading,
         currentUsers,
         totalPages,
         currentPage,

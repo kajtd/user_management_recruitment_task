@@ -8,7 +8,7 @@
 
   const usersStore = useUsersStore();
 
-  const { users } = storeToRefs(usersStore);
+  const { users, loading } = storeToRefs(usersStore);
 
   type Props = {
     user: User;
@@ -21,6 +21,7 @@
   };
 
   const deleteUser = async (id: number): Promise<void> => {
+    loading.value = true;
     const response = await window.fetch(`https://reqres.in/api/users/${id}`, {
       method: 'DELETE',
       headers: {
@@ -35,6 +36,7 @@
       console.error(`Error when deleting user with id ${id}`);
       throw new Error(`Error when deleting user with id ${id}`);
     }
+    loading.value = false;
   };
 </script>
 

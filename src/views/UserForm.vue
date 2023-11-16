@@ -24,7 +24,7 @@
   const lastName = ref('');
   const avatar = ref(defaultAvatar);
 
-  const { users } = storeToRefs(usersStore);
+  const { users, loading } = storeToRefs(usersStore);
 
   const changePhoto = () => {
     const url = window.prompt('Please enter the URL of the new photo');
@@ -67,6 +67,8 @@
   }
 
   const onSubmit = async () => {
+    loading.value = true;
+
     const userToSave: User = {
       id: Number(route.params.id) || users.value.length + 1,
       avatar: avatar.value,
@@ -85,7 +87,7 @@
       } else {
         users.value.push(savedUser);
       }
-
+      loading.value = false;
       router.push('/');
     } catch (error) {
       console.error(error);
