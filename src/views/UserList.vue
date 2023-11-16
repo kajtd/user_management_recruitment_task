@@ -46,45 +46,43 @@
       },
     });
 
-    const responseData: JSONResponse = await response.json();
-    if (response.ok) {
-      const usersData = responseData?.data;
-      if (usersData) {
-        return responseData;
-      } else {
-        return Promise.reject(new Error(`Error when fetching users`));
-      }
-    } else {
-      return Promise.reject(new Error(`Error when fetching users`));
+    if (!response.ok) {
+      throw new Error('Error when saving user');
     }
+
+    return response.json();
   }
 
   watch(searchText, () => {
     currentPage.value = 1;
   });
-
   onMounted(async () => {
-    if (users.value.length) {
-      return;
+    try {
+      if (users.value.length) {
+        return;
+      }
+      loading.value = true;
+
+      // Fetch the initial page to get the total number of pages.
+      const initialResponse = await fetchUsers();
+      users.value = initialResponse.data || [];
+
+      const totalPages = initialResponse.total_pages;
+
+      // Fetch all pages upfront. This is done because:
+      // 1. The total amount of data is small (only 12 users), so it won't lead to a long initial load time or high memory usage.
+      // 2. The API doesn't provide a search endpoint, so we need all data on the client side to implement search functionality.
+      // 3. The data on the server doesn't change frequently, so we don't have to worry about data freshness.
+
+      for (let i = 2; i <= totalPages; i++) {
+        const additionalResponse = await fetchUsers(i);
+        users.value = [...users.value, ...(additionalResponse.data || [])];
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      loading.value = false;
     }
-    loading.value = true;
-
-    // Fetch the initial page to get the total number of pages.
-    const initialResponse = await fetchUsers();
-    users.value = initialResponse.data || [];
-
-    const totalPages = initialResponse.total_pages;
-
-    // Fetch all pages upfront. This is done because:
-    // 1. The total amount of data is small (only 12 users), so it won't lead to a long initial load time or high memory usage.
-    // 2. The API doesn't provide a search endpoint, so we need all data on the client side to implement search functionality.
-    // 3. The data on the server doesn't change frequently, so we don't have to worry about data freshness.
-
-    for (let i = 2; i <= totalPages; i++) {
-      const additionalResponse = await fetchUsers(i);
-      users.value = [...users.value, ...(additionalResponse.data || [])];
-    }
-    loading.value = false;
   });
 </script>
 
