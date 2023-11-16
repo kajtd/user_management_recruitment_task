@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { defineStore } from 'pinia'
 import type { User } from './../types/User.ts';
 
@@ -29,6 +29,13 @@ export const useUsersStore = defineStore('users', () => {
         const end = start + usersPerPage;
         return filteredUsers.value.slice(start, end);
     });
+
+    watch(users, () => {
+        // This effectively moves the view back to the previous page if there are no users on the current page
+        if (currentPage.value > 1 && !currentUsers.value.length) {
+          currentPage.value--;
+        }
+      })
 
     return { 
         users,
