@@ -8,8 +8,8 @@ export default createRouter({
       component: () => import('../views/UserList.vue'),
     },
     {
-      path: '/user-form',
+      path: '/user-form/:id?',
       component: () => import('../views/UserForm.vue'),
-    },
+    }
   ],
 })

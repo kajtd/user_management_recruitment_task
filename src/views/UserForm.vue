@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
   import type { User } from '../types/User';
-  import { useRouter } from 'vue-router';
+  import { useRouter, useRoute } from 'vue-router';
   import defaultAvatar from '../assets/images/user-icon.png';
   import AppButton from '../components/AppButton.vue';
 
@@ -16,6 +16,7 @@
   };
 
   const router = useRouter();
+  const route = useRoute();
 
   const usersStore = useUsersStore();
 
@@ -32,9 +33,26 @@
     }
   };
 
-  async function createUser(user: User): Promise<APIResponse> {
-    const response = await fetch('https://reqres.in/api/users', {
-      method: 'POST',
+  onMounted(() => {
+    const id = Number(route.params.id);
+    if (id) {
+      const userToEdit = users.value.find((user) => user.id === id);
+      if (userToEdit) {
+        firstName.value = userToEdit.first_name;
+        lastName.value = userToEdit.last_name;
+        avatar.value = userToEdit.avatar;
+      }
+    }
+  });
+
+  async function saveUser(user: User): Promise<APIResponse> {
+    const method = user.id ? 'PUT' : 'POST';
+    const url = user.id
+      ? `https://reqres.in/api/users/${user.id}`
+      : 'https://reqres.in/api/users';
+
+    const response = await fetch(url, {
+      method,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -42,29 +60,32 @@
     });
 
     if (!response.ok) {
-      throw new Error('Error when creating new user');
+      throw new Error('Error when saving user');
     }
 
     return response.json();
   }
 
   const onSubmit = async () => {
-    const newUser: User = {
-      id: users.value.length + 1,
+    const userToSave: User = {
+      id: Number(route.params.id) || users.value.length + 1,
       avatar: avatar.value,
       first_name: firstName.value,
       last_name: lastName.value,
     };
 
     try {
-      const createdUser = await createUser({
-        id: users.value.length + 1,
-        first_name: newUser.first_name,
-        last_name: newUser.last_name,
-        avatar: newUser.avatar,
-      });
+      const savedUser = await saveUser(userToSave);
 
-      users.value.push(createdUser);
+      if (route.params.id) {
+        const index = users.value.findIndex(
+          (u) => u.id === Number(route.params.id)
+        );
+        users.value.splice(index, 1, savedUser);
+      } else {
+        users.value.push(savedUser);
+      }
+
       router.push('/');
     } catch (error) {
       console.error(error);

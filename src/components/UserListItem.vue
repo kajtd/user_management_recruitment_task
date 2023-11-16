@@ -2,6 +2,9 @@
   import type { User } from './../types/User.ts';
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
 
   const usersStore = useUsersStore();
 
@@ -13,8 +16,8 @@
 
   defineProps<Props>();
 
-  const editUser = () => {
-    // Edit user logic here
+  const editUser = (id: number) => {
+    router.push(`/user-form/${id}`);
   };
 
   const deleteUser = async (id: number): Promise<void> => {
@@ -48,10 +51,10 @@
       {{ `${user.first_name} ${user.last_name}` }}
     </td>
     <td class="user-list-item__actions">
-      <button @click="editUser" class="user-list-item__btn">
+      <button class="user-list-item__btn" @click="editUser(user.id)">
         <i class="icon icon--small icon--gray edit"></i>
       </button>
-      <button @click="deleteUser(user.id)" class="user-list-item__btn">
+      <button class="user-list-item__btn" @click="deleteUser(user.id)">
         <i class="icon icon--small icon--gray trash"></i>
       </button>
     </td>
