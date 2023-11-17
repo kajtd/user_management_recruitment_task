@@ -101,7 +101,7 @@
   <main class="user-form">
     <h1 class="user-form__title">{{ isEditing ? 'Edit' : 'Add' }} user</h1>
     <section class="user-form__section">
-      <form @submit.prevent="onSubmit" class="user-form__form">
+      <form class="user-form__form" @submit.prevent="onSubmit">
         <div class="user-form__input-group">
           <label for="first-name" class="user-form__label">First Name</label>
           <input
