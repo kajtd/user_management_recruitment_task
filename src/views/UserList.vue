@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, watch, onMounted } from 'vue';
+  import { computed, onMounted } from 'vue';
   import type { User } from './../types/User.ts';
   import { storeToRefs } from 'pinia';
   import { useUsersStore } from '../store/users';
@@ -12,14 +12,8 @@
 
   const usersStore = useUsersStore();
 
-  const {
-    users,
-    filteredUsers,
-    currentUsers,
-    searchText,
-    currentPage,
-    loading,
-  } = storeToRefs(usersStore);
+  const { users, filteredUsers, currentUsers, searchText, loading } =
+    storeToRefs(usersStore);
 
   type JSONResponse = {
     data?: User[];
@@ -53,9 +47,6 @@
     return response.json();
   }
 
-  watch(searchText, () => {
-    currentPage.value = 1;
-  });
   onMounted(async () => {
     try {
       if (users.value.length) {

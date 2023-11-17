@@ -11,6 +11,7 @@ export const useUsersStore = defineStore('users', () => {
 
     const totalPages = computed(() => Math.ceil(filteredUsers.value.length / usersPerPage));
 
+    // `filteredUsers` computes a list of users that match the `searchText` in their full name.
     const filteredUsers = computed<User[]>(() => {
         if (!searchText.value) {
             return users.value;
@@ -24,6 +25,7 @@ export const useUsersStore = defineStore('users', () => {
         });
     });
 
+    // `currentUsers` computes a subset of `filteredUsers` for the current page based on `usersPerPage`.
     const currentUsers = computed(() => {
         const start = (currentPage.value - 1) * usersPerPage;
         const end = start + usersPerPage;
@@ -35,7 +37,11 @@ export const useUsersStore = defineStore('users', () => {
         if (currentPage.value > 1 && !currentUsers.value.length) {
           currentPage.value--;
         }
-      })
+    })
+
+    watch(searchText, () => {
+        currentPage.value = 1;
+    });
 
     return { 
         users,
