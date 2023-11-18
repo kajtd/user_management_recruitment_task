@@ -12,6 +12,8 @@
 
   const usersStore = useUsersStore();
 
+  const { usersPerPage } = usersStore;
+
   const { users, filteredUsers, currentUsers, searchText, loading } =
     storeToRefs(usersStore);
 
@@ -27,9 +29,11 @@
     total_pages: number;
   };
 
-  const totalUsersPages = computed(() => Math.ceil(users.value.length / 6));
+  const totalUsersPages = computed(() =>
+    Math.ceil(users.value.length / usersPerPage)
+  );
   const filteredUsersTotalPages = computed(() =>
-    Math.ceil(filteredUsers.value.length / 6)
+    Math.ceil(filteredUsers.value.length / usersPerPage)
   );
 
   async function fetchUsers(pageNumber = 1): Promise<JSONResponse> {
@@ -109,7 +113,10 @@
           />
         </tbody>
       </table>
-      <div v-else-if="!currentUsers.length && !loading">
+      <div
+        v-else-if="!currentUsers.length && !loading"
+        class="user-list__no-results"
+      >
         No matching users were found. Please try again.
       </div>
       <UserPagination
@@ -210,6 +217,11 @@
       @media screen and (min-width: $md) {
         padding: 20px;
       }
+    }
+
+    &__no-results {
+      text-align: center;
+      padding: 12px;
     }
 
     &__pagination {

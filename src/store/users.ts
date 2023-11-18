@@ -5,7 +5,7 @@ import type { User } from './../types/User.ts';
 export const useUsersStore = defineStore('users', () => {
     const users = ref<User[]>([])
     const currentPage = ref(1)
-    const usersPerPage = 6
+    const usersPerPage = 8
     const searchText = ref('')
     const loading = ref(false)
 
@@ -48,6 +48,7 @@ export const useUsersStore = defineStore('users', () => {
         loading,
         currentUsers,
         totalPages,
+        usersPerPage,
         currentPage,
         filteredUsers,
         searchText
