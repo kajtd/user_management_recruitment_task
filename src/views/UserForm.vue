@@ -7,6 +7,7 @@
   import defaultAvatar from '../assets/images/user-icon.png';
   import { API_BASE_URL } from '../config';
   import AppButton from '../components/AppButton.vue';
+  import InputGroup from '../components/InputGroup.vue';
 
   type APIResponse = {
     id: number;
@@ -102,26 +103,28 @@
     <h1 class="user-form__title">{{ isEditing ? 'Edit' : 'Add' }} user</h1>
     <section class="user-form__section">
       <form class="user-form__form" @submit.prevent="onSubmit">
-        <div class="user-form__input-group">
-          <label for="first-name" class="user-form__label">First Name</label>
-          <input
-            v-model="firstName"
-            type="text"
-            id="first-name"
-            class="user-form__input"
-            placeholder="Semafor"
-          />
-        </div>
-        <div class="user-form__input-group">
-          <label for="last-name" class="user-form__label">Last Name</label>
-          <input
-            v-model="lastName"
-            type="text"
-            id="last-name"
-            class="user-form__input"
-            placeholder="Krzekobrzegyczynski"
-          />
-        </div>
+        <InputGroup
+          v-model="firstName"
+          id="first-name"
+          label="First Name"
+          required
+          :minlength="2"
+          :maxlength="50"
+          class="user-form__input-group"
+          input-class="user-form__input"
+          label-class="user-form__label"
+        />
+        <InputGroup
+          v-model="lastName"
+          id="last-name"
+          label="Last Name"
+          required
+          :minlength="2"
+          :maxlength="50"
+          class="user-form__input-group"
+          input-class="user-form__input"
+          label-class="user-form__label"
+        />
         <AppButton type="submit" class="user-form__submit">
           Update Details
         </AppButton>
@@ -141,7 +144,7 @@
   </main>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
   @import '../assets/scss/_mixins.scss';
   @import '../assets/scss/_variables.scss';
 
