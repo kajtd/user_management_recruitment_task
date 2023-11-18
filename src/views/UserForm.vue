@@ -168,7 +168,7 @@
     &__section {
       display: flex;
       align-items: center;
-      flex-direction: column;
+      flex-direction: column-reverse;
       justify-content: space-between;
       gap: 24px;
       width: 100%;
