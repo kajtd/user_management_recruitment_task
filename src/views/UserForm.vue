@@ -26,6 +26,9 @@
   const lastName = ref('');
   const avatar = ref(defaultAvatar);
   const isEditing = computed(() => !!route.params.id);
+  const lastAssignedId = computed(() =>
+    users.value.reduce((maxId, user) => Math.max(user.id, maxId), 0)
+  );
 
   const { users, loading } = storeToRefs(usersStore);
 
@@ -73,7 +76,7 @@
     loading.value = true;
 
     const userToSave: User = {
-      id: Number(route.params.id) || users.value.length + 1,
+      id: Number(route.params.id) || lastAssignedId.value + 1,
       avatar: avatar.value,
       first_name: firstName.value,
       last_name: lastName.value,
